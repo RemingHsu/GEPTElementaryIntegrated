@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>GEPT 初級單字 v1.1</title>
+<title>GEPT 初級單字 v2.0</title>
 <style>
 :root{
   --bg:#fafaf7; --paper:#fff; --ink:#1a1a1a; --ink-2:#3a3a37;
@@ -25,10 +25,17 @@ input.search{flex:1;min-width:220px;background:var(--paper);border:1px solid var
 .tools{display:flex;gap:6px;align-items:center;font-family:ui-sans-serif,system-ui,sans-serif;font-size:13px}
 .btn{background:transparent;color:var(--ink-2);border:1px solid var(--rule);border-radius:8px;padding:6px 12px;cursor:pointer;font:inherit;font-size:13px}
 .btn.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-nav.tabs{display:flex;gap:2px;overflow-x:auto;padding:0 16px;border-bottom:1px solid var(--rule);background:var(--bg);position:sticky;top:62px;z-index:49;font-family:ui-sans-serif,system-ui,sans-serif}
+/* tabs: 3 行堆疊 (meta / main / supp) */
+.tabs-wrap{position:sticky;top:62px;z-index:49;background:var(--bg);border-bottom:1px solid var(--rule)}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;padding:0 16px;background:var(--bg);font-family:ui-sans-serif,system-ui,sans-serif;scrollbar-width:thin}
+nav.tabs-meta{background:color-mix(in oklch,var(--paper) 60%,var(--bg));border-bottom:1px solid var(--rule)}
+nav.tabs-supp{background:color-mix(in oklch,var(--paper) 35%,var(--bg));border-top:1px dashed var(--rule)}
+nav.tabs-supp .tab{font-size:13px;color:color-mix(in oklch,var(--muted) 80%,var(--ink))}
 .tab{flex-shrink:0;padding:10px 14px;cursor:pointer;color:var(--muted);border:none;background:transparent;border-bottom:2px solid transparent;white-space:nowrap;font-size:14px;font-family:inherit}
 .tab.active{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
 .tab .ct{color:var(--muted);font-size:11px;margin-left:4px}
+.tab .mm-mark{display:inline-block;margin-left:5px;font-size:10px;opacity:.55;vertical-align:1px;transition:opacity .12s ease}
+.tab:hover .mm-mark,.tab.active .mm-mark{opacity:1}
 main{padding:20px 28px 80px;max-width:1400px;margin:0 auto}
 .theme-h{font-size:24px;margin:0 0 4px;font-weight:600}
 .theme-meta{color:var(--muted);font-size:13px;margin-bottom:16px;font-family:ui-sans-serif,system-ui,sans-serif}
@@ -83,6 +90,35 @@ mark{background:color-mix(in oklch,var(--yellow) 60%,transparent);padding:0 2px;
 .mindmap .mm-img-wrap{position:relative;background:color-mix(in oklch,var(--rule) 35%,var(--paper));border-radius:10px;overflow:hidden;text-align:center}
 .mindmap .mm-img-wrap img{display:block;max-width:100%;width:auto;max-height:480px;margin:0 auto;cursor:zoom-in;background:#fff}
 .mindmap .mm-img-wrap .mm-fail{padding:34px 20px;color:var(--muted);font-size:13px}
+/* v2.3: 分類↔心智圖對照表 */
+.mapping-card,.main-mm-card{background:color-mix(in oklch,var(--accent) 7%,var(--paper));border:1px solid color-mix(in oklch,var(--accent) 28%,var(--rule));border-radius:14px;padding:18px 22px;margin-bottom:20px;font-family:ui-sans-serif,system-ui,sans-serif}
+.mapping-card h2,.main-mm-card h2{margin:0 0 4px;font-size:18px;color:var(--ink);font-weight:700}
+.mapping-card .mapping-sub,.main-mm-card .mapping-sub{margin:6px 0 14px;font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.mapping-card .mapping-foot{margin:12px 0 0;font-size:12.5px;color:var(--muted);line-height:1.55}
+.mapping-table-wrap{background:var(--paper);border:1px solid var(--rule);border-radius:10px;overflow-x:auto;max-height:54vh;overflow-y:auto}
+.mapping-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.mapping-table thead th{position:sticky;top:0;background:var(--paper);border-bottom:1.5px solid var(--rule);text-align:left;padding:9px 12px;font-weight:600;color:var(--ink-2);font-size:12.5px;letter-spacing:.3px}
+.mapping-table tbody td{padding:7px 12px;border-bottom:1px solid color-mix(in oklch,var(--rule) 60%,var(--paper))}
+.mapping-table tbody tr:hover{background:color-mix(in oklch,var(--accent) 5%,var(--paper))}
+.mapping-table tbody td:first-child{color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:11.5px;width:36px;text-align:center}
+.mapping-table .mm-pill{display:inline-block;padding:2px 8px;border-radius:99px;background:color-mix(in oklch,var(--accent) 14%,var(--paper));border:1px solid color-mix(in oklch,var(--accent) 35%,var(--rule));font-size:12.5px;color:var(--ink)}
+.mapping-table .branch{color:var(--muted);font-size:12.5px}
+/* v2.0 樹狀心智圖 */
+.mindmap .mm-tree-wrap{padding:14px 18px;background:color-mix(in oklch,var(--paper) 70%,var(--bg));border-radius:10px;max-height:60vh;overflow:auto}
+.mindmap .mm-root,.mm-tree-modal .mm-root{font-size:15px;font-weight:700;padding:6px 12px;background:var(--accent);color:#fff;border-radius:8px;display:inline-block;margin-bottom:10px}
+.mm-tree{list-style:none;padding-left:18px;margin:2px 0 0;border-left:1px solid var(--rule)}
+.mm-tree li{margin:3px 0;position:relative}
+.mm-tree li::before{content:"";position:absolute;left:-18px;top:11px;width:14px;height:1px;background:var(--rule)}
+.mm-tree .mm-node{display:inline-block;padding:2px 8px;border-radius:6px;background:var(--paper);border:1px solid var(--rule);font-size:13px;line-height:1.5}
+.mm-tree .mm-l1 > .mm-node{font-weight:600;font-size:14px;background:color-mix(in oklch,var(--accent) 12%,var(--paper));border-color:color-mix(in oklch,var(--accent) 35%,var(--rule))}
+.mm-tree .mm-l2 > .mm-node{background:color-mix(in oklch,var(--accent) 5%,var(--paper))}
+.mm-tree .mm-l3 > .mm-node{background:transparent;border-color:transparent;color:var(--muted);font-size:12.5px}
+.mm-tree-modal{background:#fff;color:#000;padding:24px 28px;border-radius:12px;max-width:88vw;max-height:78vh;overflow:auto;font-family:ui-sans-serif,system-ui,sans-serif}
+.mm-tree-modal .mm-root{background:#1f1f1f;color:#fff}
+.mm-tree-modal .mm-tree .mm-node{background:#f5f5f5;border-color:#ddd}
+.mm-tree-modal .mm-tree .mm-l1 > .mm-node{background:#ffe9d4;border-color:#f5c79a}
+.mm-tree-modal .mm-tree .mm-l2 > .mm-node{background:#fff5e9}
+.mm-tree-modal .mm-tree .mm-l3 > .mm-node{background:transparent;border-color:transparent;color:#666}
 .mindmap.collapsed .mm-body{display:none}
 .mindmap.collapsed{padding:10px 16px}
 
@@ -100,9 +136,52 @@ mark{background:color-mix(in oklch,var(--yellow) 60%,transparent);padding:0 2px;
 body[data-selecting="1"] .card .pocket-mark{display:inline-flex}
 body[data-selecting="1"] .card{padding-left:42px}
 .card .pocket-mark.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.card .pocket-pin{position:absolute;bottom:8px;right:10px;background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:4px 6px;border-radius:6px}
-.card .pocket-pin.on{color:var(--accent)}
-.card .pocket-pin:hover{background:var(--rule)}
+.card .pocket-pin{position:absolute;bottom:8px;right:10px;background:transparent;border:1px solid transparent;cursor:pointer;color:var(--muted);font-size:14px;padding:4px 10px;border-radius:999px;line-height:1;transition:all .12s ease;display:inline-flex;align-items:center;gap:4px;font-family:ui-sans-serif,system-ui,sans-serif}
+.card .pocket-pin::before{content:"📌";filter:grayscale(1) opacity(.5)}
+.card .pocket-pin:hover{background:var(--rule);color:var(--ink-2)}
+.card .pocket-pin:hover::before{filter:none}
+.card .pocket-pin.on{color:#fff;background:var(--accent);border-color:var(--accent);box-shadow:inset 0 1px 3px rgba(0,0,0,.28),0 0 0 2px color-mix(in oklch,var(--accent) 25%,transparent);transform:scale(.95);font-weight:500}
+.card .pocket-pin.on::before{content:"✔";filter:none;font-size:12px}
+.card .pocket-pin.on::after{content:"在口袋";font-size:11px}
+.card.in-pocket{box-shadow:0 0 0 2px color-mix(in oklch,var(--accent) 35%,transparent) inset}
+.star-tag{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:4px;font-size:10px;font-family:ui-sans-serif,system-ui;font-weight:600;vertical-align:2px;letter-spacing:.5px}
+.star-tag.s5{background:color-mix(in oklch,var(--accent) 92%,#fff);color:#fff}
+.star-tag.s4{background:color-mix(in oklch,var(--accent) 18%,var(--paper));color:var(--accent);border:1px solid color-mix(in oklch,var(--accent) 40%,var(--rule))}
+.card.has-s5{box-shadow:inset 3px 0 0 var(--accent)}
+.card.has-s4{box-shadow:inset 3px 0 0 color-mix(in oklch,var(--accent) 60%,var(--rule))}
+.card.has-s5.in-pocket,.card.has-s4.in-pocket{box-shadow:inset 3px 0 0 var(--accent), 0 0 0 2px color-mix(in oklch,var(--accent) 35%,transparent) inset}
+.legend-stars{display:inline-block;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:.5px}
+
+
+/* ===== v1.1: 心智圖對照編輯器 ===== */
+.mm-editor{background:var(--paper);border:1px solid var(--rule);border-radius:14px;padding:18px 22px;margin-bottom:18px;font-family:ui-sans-serif,system-ui,sans-serif;font-size:13.5px}
+.mm-editor h2{margin:0 0 4px;font-size:15px;color:var(--ink-2);font-weight:600}
+.mm-editor .mme-sub{color:var(--muted);font-size:12.5px;margin-bottom:14px}
+.mm-editor .mme-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed var(--rule)}
+.mm-editor .mme-list{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto;padding-right:4px}
+.mm-editor .mme-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;border:1px solid var(--rule);background:var(--bg)}
+.mm-editor .mme-row:hover{border-color:color-mix(in oklch,var(--accent) 40%,var(--rule))}
+.mm-editor .mme-name{flex:1;font-size:13.5px}
+.mm-editor .mme-chips{display:flex;gap:4px;flex-wrap:wrap;color:var(--muted);font-size:11px;font-family:ui-monospace,Menlo,monospace}
+.mm-editor .mme-chip{background:var(--rule);padding:1px 6px;border-radius:99px}
+.mm-editor .mme-empty{color:var(--muted);font-style:italic;font-size:11.5px}
+.mm-editor .mme-count{font-family:ui-monospace,Menlo,monospace;color:var(--muted);font-size:11.5px;min-width:32px;text-align:right}
+.mm-editor .mme-customized{border-left:3px solid var(--accent)}
+.mm-editor .btn-small{padding:4px 8px;font-size:12px}
+
+/* 編輯對話框 */
+.mme-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;font-family:ui-sans-serif,system-ui,sans-serif}
+.mme-modal .mme-box{background:var(--paper);color:var(--ink);border-radius:14px;padding:20px 22px;width:min(720px,96vw);max-height:88vh;display:flex;flex-direction:column}
+.mme-modal .mme-box h3{margin:0 0 6px;font-size:17px}
+.mme-modal .mme-box .mme-hint{color:var(--muted);font-size:12.5px;margin-bottom:12px}
+.mme-modal .mme-grid{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;padding:4px 4px 12px}
+.mme-modal .mme-opt{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid var(--rule);border-radius:8px;cursor:pointer;background:var(--bg)}
+.mme-modal .mme-opt:hover{border-color:color-mix(in oklch,var(--accent) 50%,var(--rule))}
+.mme-modal .mme-opt.on{border-color:var(--accent);background:color-mix(in oklch,var(--accent) 10%,var(--paper))}
+.mme-modal .mme-opt .mme-thumb{width:48px;height:36px;background:#eee;border-radius:4px;flex-shrink:0;object-fit:cover;background-image:repeating-linear-gradient(45deg,#e8e8e8 0 4px,#f4f4f4 4px 8px)}
+.mme-modal .mme-opt .mme-slug{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--ink-2);word-break:break-all;line-height:1.35}
+.mme-modal .mme-foot{display:flex;gap:8px;align-items:center;border-top:1px solid var(--rule);padding-top:12px;margin-top:8px}
+.mme-modal .mme-foot .sp{flex:1}
 
 /* ===== v1.1: 口袋單字 / 列印版 ===== */
 .pocket-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;font-family:ui-sans-serif,system-ui,sans-serif;font-size:13.5px}
@@ -142,8 +221,8 @@ body[data-selecting="1"] .card{padding-left:42px}
 <body>
 <header>
   <div class="row" style="margin-bottom:8px">
-    <h1>GEPT 初級單字 <span class="sub">LTTC · 2,216 字 · v1.1</span></h1>
-    <input class="search" id="search" type="search" placeholder="🔍 搜尋單字 / 中文 / 詞類…" autocomplete="off">
+    <h1>GEPT 初級單字 <span class="sub">LTTC · 2,216 字 · v2.0</span></h1>
+    <input class="search" id="search" type="search" placeholder="🔍 全分類搜尋單字 / 中文 / 詞類…" autocomplete="off">
     <div class="tools">
       <span class="progress-pill"><span id="known-count">0</span>/<span id="total-count">0</span><span class="bar"><i id="known-bar"></i></span></span>
       <button class="btn" id="voice-btn" title="語音設定">🔊 語音</button>
@@ -174,25 +253,15 @@ body[data-selecting="1"] .card{padding-left:42px}
     </div>
   </div>
 </header>
-<nav class="tabs" id="tabs"></nav>
+<div class="tabs-wrap">
+  <nav class="tabs tabs-meta" id="tabs-meta"></nav>
+  <nav class="tabs tabs-main" id="tabs-main"></nav>
+  <nav class="tabs tabs-supp" id="tabs-supp"></nav>
+</div>
 <main id="main"></main>
 
-<script src="data/01-people.js"></script>
-<script src="data/02-body-health.js"></script>
-<script src="data/03-food.js"></script>
-<script src="data/04-nature.js"></script>
-<script src="data/05-home-school.js"></script>
-<script src="data/06-city-transport-clothes.js"></script>
-<script src="data/07-color-time-number.js"></script>
-<script src="data/08-actions.js"></script>
-<script src="data/09-adjectives-adverbs.js"></script>
-<script src="data/10-school-jobs-leisure.js"></script>
-<script src="data/11-abstract-objects.js"></script>
-<script src="data/12-supplement-A-D.js"></script>
-<script src="data/13-supplement-E-K.js"></script>
-<script src="data/14-supplement-L-P.js"></script>
-<script src="data/15-supplement-Q-S.js"></script>
-<script src="data/16-supplement-T-Z.js"></script>
+<script src="data/vocab.js"></script>
+<script src="data/mindmaps.js"></script>
 <script>
 // ============ 詞類縮寫對照 ============
 const POS_LEGEND = [
@@ -204,291 +273,73 @@ const POS_LEGEND = [
 ];
 
 // ============ 單字資料 ============
-// 格式: [單字, 詞類陣列, 中文意思, 英文例句, 中文翻譯]
-// 資料分散於 data/*.js,於 HTML 頂端用 <script> 載入後合併到 window.VOCAB
-window.VOCAB = window.VOCAB || {};
-Object.assign(window.VOCAB, {
-  "👨‍👩‍👧 家庭與人際": [
-    ["adult",["n.","adj."],"成年人；成年的","My father is an adult.","我爸爸是成年人。"],
-    ["aunt",["n."],"姑姑、阿姨、舅媽","My aunt lives in Taipei.","我阿姨住在台北。"],
-    ["baby",["n."],"嬰兒、寶貝","The baby is sleeping.","寶寶在睡覺。"],
-    ["babysit",["v."],"當臨時保姆","I babysit my little sister.","我幫忙照顧妹妹。"],
-    ["babysitter",["n."],"保姆","We need a babysitter tonight.","我們今晚需要保姆。"],
-    ["boy",["n."],"男孩","That boy is my brother.","那男孩是我弟弟。"],
-    ["brother",["n."],"兄弟","I have one brother.","我有一個哥哥。"],
-    ["child",["n."],"小孩、兒童","The child is playing.","小孩在玩。"],
-    ["childhood",["n."],"童年","I had a happy childhood.","我有快樂的童年。"],
-    ["childish",["adj."],"孩子氣的、幼稚的","Don't be so childish.","別這麼幼稚。"],
-    ["childlike",["adj."],"孩子般的、天真的","She has a childlike smile.","她有孩子般的微笑。"],
-    ["classmate",["n."],"同班同學","He is my classmate.","他是我的同學。"],
-    ["cousin",["n."],"堂(表)兄弟姊妹","My cousin is ten years old.","我表弟十歲。"],
-    ["dad",["n."],"爸爸","My dad cooks dinner.","我爸爸煮晚餐。"],
-    ["daughter",["n."],"女兒","Their daughter is cute.","他們的女兒很可愛。"],
-    ["elder",["n.","adj."],"長者；年長的","Respect your elders.","尊敬長輩。"],
-    ["family",["n."],"家人、家庭","I love my family.","我愛我的家人。"],
-    ["father",["n."],"父親","My father works hard.","我父親工作努力。"],
-    ["female",["adj.","n."],"女性的；女性","Most teachers here are female.","這裡多數老師是女性。"],
-    ["friend",["n."],"朋友","She is my best friend.","她是我最好的朋友。"],
-    ["friendship",["n."],"友誼","Our friendship is strong.","我們的友誼很堅定。"],
-    ["girl",["n."],"女孩","The girl is reading.","女孩在閱讀。"],
-    ["grandfather",["n."],"祖父","My grandfather tells stories.","我爺爺說故事。"],
-    ["grandmother",["n."],"祖母","My grandmother bakes cookies.","我奶奶烤餅乾。"],
-    ["husband",["n."],"丈夫","Her husband is a doctor.","她丈夫是醫生。"],
-    ["kid",["n."],"小孩","The kids are at school.","孩子們在學校。"],
-    ["male",["adj.","n."],"男性的；男性","A male lion has a mane.","公獅有鬃毛。"],
-    ["man",["n."],"男人","The man is tall.","那男人很高。"],
-    ["marry",["v."],"結婚","They will marry next year.","他們明年結婚。"],
-    ["mother",["n.","v."],"母親；養育","My mother makes lunch.","我媽媽做午餐。"],
-    ["neighbor",["n."],"鄰居","My neighbor is friendly.","我鄰居很友善。"],
-    ["parent",["n."],"父母","My parents are kind.","我父母很親切。"],
-    ["people",["n."],"人、人們","Many people came.","很多人來了。"],
-    ["person",["n."],"人","She is a kind person.","她是好人。"],
-    ["sister",["n."],"姐妹","My sister is older than me.","我姐姐比我大。"],
-    ["son",["n."],"兒子","Their son plays soccer.","他們兒子踢足球。"],
-    ["uncle",["n."],"叔叔","My uncle is funny.","我叔叔很有趣。"],
-    ["wife",["n."],"妻子","His wife is a nurse.","他妻子是護士。"],
-    ["woman",["n."],"女人","That woman is tall.","那女人很高。"]
-  ],
-  "💼 身分與職業": [
-    ["actor",["n."],"演員","He is a famous actor.","他是有名的演員。"],
-    ["actress",["n."],"女演員","She is a great actress.","她是出色的女演員。"],
-    ["artist",["n."],"藝術家、畫家","The artist paints flowers.","這藝術家畫花。"],
-    ["boss",["n."],"老闆","My boss is kind.","我老闆人很好。"],
-    ["clerk",["n."],"店員、職員","The clerk helps me.","店員幫我。"],
-    ["coach",["n.","v."],"教練；指導","The coach is strict.","教練很嚴格。"],
-    ["cook",["v.","n."],"烹調；廚師","She cooks dinner.","她煮晚餐。"],
-    ["dentist",["n."],"牙醫","I see a dentist twice a year.","我一年看兩次牙醫。"],
-    ["doctor",["n."],"醫生","The doctor is busy.","醫生很忙。"],
-    ["driver",["n."],"駕駛員","The bus driver is friendly.","公車司機很友善。"],
-    ["engineer",["n."],"工程師","My uncle is an engineer.","我叔叔是工程師。"],
-    ["farmer",["n."],"農夫","The farmer grows rice.","農夫種稻米。"],
-    ["king",["n."],"國王","The king lives in the castle.","國王住在城堡裡。"],
-    ["lawyer",["n."],"律師","She wants to be a lawyer.","她想當律師。"],
-    ["nurse",["n."],"護理師","The nurse takes care of me.","護士照顧我。"],
-    ["officer",["n."],"官員、警官","The officer asked questions.","警官提問。"],
-    ["police",["n."],"警方","Call the police!","快報警!" ],
-    ["president",["n."],"總統","The president gave a speech.","總統發表演說。"],
-    ["prince",["n."],"王子","The prince met a princess.","王子遇見公主。"],
-    ["princess",["n."],"公主","The princess is brave.","公主很勇敢。"],
-    ["queen",["n."],"皇后","The queen wore a crown.","皇后戴著皇冠。"],
-    ["scientist",["n."],"科學家","Scientists study nature.","科學家研究自然。"],
-    ["singer",["n."],"歌手","She is a famous singer.","她是有名的歌手。"],
-    ["soldier",["n."],"軍人","Soldiers protect the country.","軍人保衛國家。"],
-    ["student",["n."],"學生","I am a student.","我是學生。"],
-    ["teacher",["n."],"老師","My teacher is kind.","我老師很親切。"],
-    ["waiter",["n."],"服務生","The waiter brought our food.","服務生送來餐點。"],
-    ["worker",["n."],"工人","The workers built the house.","工人蓋了房子。"],
-    ["writer",["n."],"作家","She is a famous writer.","她是有名的作家。"]
-  ],
-  "🧍 身體部位": [
-    ["arm",["n."],"手臂","She raised her arm.","她舉起手臂。"],
-    ["back",["n."],"背部","My back hurts.","我的背在痛。"],
-    ["body",["n."],"身體","Exercise is good for the body.","運動對身體好。"],
-    ["ear",["n."],"耳朵","I have two ears.","我有兩隻耳朵。"],
-    ["eye",["n."],"眼睛","Her eyes are blue.","她的眼睛是藍色的。"],
-    ["face",["n."],"臉","Wash your face.","洗你的臉。"],
-    ["finger",["n."],"手指","I cut my finger.","我割傷了手指。"],
-    ["foot",["n."],"腳","My foot is small.","我的腳很小。"],
-    ["hair",["n."],"頭髮","Her hair is long.","她的頭髮很長。"],
-    ["hand",["n."],"手","Wash your hands.","洗你的手。"],
-    ["head",["n."],"頭","My head hurts.","我頭痛。"],
-    ["heart",["n."],"心臟","My heart beats fast.","我心跳很快。"],
-    ["knee",["n."],"膝蓋","I hurt my knee.","我傷到膝蓋。"],
-    ["leg",["n."],"腿","She has long legs.","她腿很長。"],
-    ["lip",["n."],"嘴唇","Her lips are red.","她嘴唇紅紅的。"],
-    ["mouth",["n."],"嘴","Open your mouth.","張開嘴。"],
-    ["neck",["n."],"脖子","My neck is sore.","我脖子痠痠的。"],
-    ["nose",["n."],"鼻子","His nose is small.","他的鼻子小小的。"],
-    ["shoulder",["n."],"肩膀","My shoulder hurts.","我肩膀痛。"],
-    ["skin",["n."],"皮膚","Her skin is soft.","她皮膚很柔軟。"],
-    ["stomach",["n."],"胃","My stomach is full.","我肚子飽了。"],
-    ["tooth",["n."],"牙齒","Brush your teeth.","刷牙。"]
-  ],
-  "🍚 食物": [
-    ["apple",["n."],"蘋果","I eat an apple.","我吃一個蘋果。"],
-    ["banana",["n."],"香蕉","Bananas are yellow.","香蕉是黃色的。"],
-    ["beef",["n."],"牛肉","I like beef noodles.","我喜歡牛肉麵。"],
-    ["bread",["n."],"麵包","I eat bread for breakfast.","我早餐吃麵包。"],
-    ["breakfast",["n."],"早餐","Breakfast is at seven.","早餐是七點。"],
-    ["cake",["n."],"蛋糕","The cake is sweet.","蛋糕很甜。"],
-    ["candy",["n."],"糖果","Kids love candy.","小孩愛糖果。"],
-    ["cheese",["n."],"起司","I put cheese on bread.","我把起司放在麵包上。"],
-    ["chicken",["n."],"雞肉、雞","Chicken is my favorite.","雞肉是我的最愛。"],
-    ["chocolate",["n."],"巧克力","Chocolate is sweet.","巧克力很甜。"],
-    ["coffee",["n."],"咖啡","I drink coffee in the morning.","我早上喝咖啡。"],
-    ["cookie",["n."],"餅乾","Grandma makes cookies.","奶奶做餅乾。"],
-    ["dessert",["n."],"甜點","Ice cream is my dessert.","冰淇淋是我的甜點。"],
-    ["dinner",["n."],"晚餐","Dinner is at six.","晚餐六點。"],
-    ["egg",["n."],"蛋","I had two eggs.","我吃了兩顆蛋。"],
-    ["fish",["n."],"魚","Fish swim in the sea.","魚在海裡游。"],
-    ["food",["n."],"食物","I love Chinese food.","我愛中國菜。"],
-    ["fruit",["n."],"水果","Fruit is healthy.","水果很健康。"],
-    ["hamburger",["n."],"漢堡","I want a hamburger.","我想要漢堡。"],
-    ["ice cream",["n."],"冰淇淋","I love ice cream.","我愛冰淇淋。"],
-    ["juice",["n."],"果汁","Orange juice is my favorite.","柳橙汁是我最愛。"],
-    ["lunch",["n."],"午餐","Let's have lunch.","我們吃午餐吧。"],
-    ["meat",["n."],"肉","I don't eat meat.","我不吃肉。"],
-    ["milk",["n."],"牛奶","I drink milk every day.","我每天喝牛奶。"],
-    ["noodle",["n."],"麵條","I love noodles.","我愛麵。"],
-    ["orange",["n.","adj."],"柳橙；橙色的","An orange is round.","柳橙是圓的。"],
-    ["pizza",["n."],"披薩","Pizza is delicious.","披薩很好吃。"],
-    ["rice",["n."],"米飯","I eat rice every day.","我每天吃飯。"],
-    ["sandwich",["n."],"三明治","I made a sandwich.","我做了三明治。"],
-    ["soup",["n."],"湯","The soup is hot.","湯很燙。"],
-    ["sugar",["n."],"糖","Add some sugar.","加點糖。"],
-    ["tea",["n."],"茶","I like green tea.","我喜歡綠茶。"],
-    ["tomato",["n."],"番茄","Tomatoes are red.","番茄是紅的。"],
-    ["vegetable",["n."],"蔬菜","Eat your vegetables.","把蔬菜吃完。"],
-    ["water",["n.","v."],"水；澆水","Drink more water.","多喝水。"]
-  ],
-  "🐶 動物": [
-    ["animal",["n."],"動物","I love animals.","我愛動物。"],
-    ["bear",["n."],"熊","The bear is big.","熊很大。"],
-    ["bird",["n."],"鳥","Birds can fly.","鳥會飛。"],
-    ["cat",["n."],"貓","My cat is black.","我的貓是黑色的。"],
-    ["cow",["n."],"母牛","Cows give milk.","乳牛產牛奶。"],
-    ["dog",["n."],"狗","Dogs are friendly.","狗很友善。"],
-    ["duck",["n."],"鴨","Ducks swim in the pond.","鴨子在池塘裡游泳。"],
-    ["elephant",["n."],"象","Elephants are huge.","大象很巨大。"],
-    ["fish",["n."],"魚","I have a pet fish.","我養了一條魚。"],
-    ["frog",["n."],"青蛙","The frog jumps.","青蛙跳。"],
-    ["horse",["n."],"馬","I can ride a horse.","我會騎馬。"],
-    ["lion",["n."],"獅子","Lions are strong.","獅子很強壯。"],
-    ["monkey",["n."],"猴子","Monkeys love bananas.","猴子愛香蕉。"],
-    ["pig",["n."],"豬","Pigs are pink.","豬是粉紅色的。"],
-    ["rabbit",["n."],"兔子","The rabbit is white.","兔子是白色的。"],
-    ["sheep",["n."],"綿羊","Sheep eat grass.","羊吃草。"],
-    ["snake",["n."],"蛇","Snakes are scary.","蛇很可怕。"],
-    ["tiger",["n."],"老虎","Tigers have stripes.","老虎有條紋。"]
-  ],
-  "🌤️ 天氣與季節": [
-    ["cloudy",["adj."],"多雲的","It is cloudy today.","今天多雲。"],
-    ["cold",["adj."],"冷的","It is cold in winter.","冬天很冷。"],
-    ["hot",["adj."],"熱的","Summer is hot.","夏天很熱。"],
-    ["rain",["n.","v."],"(下)雨","It will rain tomorrow.","明天會下雨。"],
-    ["rainy",["adj."],"下雨的","It is a rainy day.","這是下雨天。"],
-    ["snow",["n.","v."],"雪；下雪","Snow is white.","雪是白色的。"],
-    ["spring",["n."],"春天","Flowers bloom in spring.","春天花會開。"],
-    ["summer",["n."],"夏天","I love summer.","我愛夏天。"],
-    ["sunny",["adj."],"陽光普照的","It is sunny today.","今天陽光普照。"],
-    ["warm",["adj."],"溫暖的","Spring is warm.","春天很溫暖。"],
-    ["weather",["n."],"天氣","The weather is nice.","天氣很好。"],
-    ["wind",["n."],"風","The wind is strong.","風很強。"],
-    ["windy",["adj."],"多風的","It is windy outside.","外面風很大。"],
-    ["winter",["n."],"冬天","Winter is cold.","冬天很冷。"],
-    ["fall",["n.","v."],"秋天；跌倒","Leaves fall in fall.","葉子在秋天掉落。"],
-    ["autumn",["n."],"秋天","Autumn is cool.","秋天很涼爽。"]
-  ],
-  "🔢 數字": [
-    ["one",["num."],"一","I have one cat.","我有一隻貓。"],
-    ["two",["num."],"二","She has two brothers.","她有兩個兄弟。"],
-    ["three",["num."],"三","Three apples on the table.","桌上有三顆蘋果。"],
-    ["four",["num."],"四","A car has four wheels.","車有四個輪子。"],
-    ["five",["num."],"五","I have five fingers.","我有五根手指。"],
-    ["six",["num."],"六","She is six years old.","她六歲。"],
-    ["seven",["num."],"七","Seven days a week.","一週七天。"],
-    ["eight",["num."],"八","An octopus has eight legs.","章魚有八隻腳。"],
-    ["nine",["num."],"九","Cats have nine lives.","貓有九條命。"],
-    ["ten",["num."],"十","I have ten dollars.","我有十元。"],
-    ["hundred",["num."],"一百","One hundred dollars.","一百元。"],
-    ["thousand",["num."],"千","One thousand books.","一千本書。"],
-    ["zero",["num."],"零","The score is zero.","比數零分。"],
-    ["first",["adj."],"首先、第一","I am first in line.","我排第一。"],
-    ["second",["adj.","n."],"第二的；秒","She came in second.","她得第二。"],
-    ["third",["adj."],"第三的","He won third place.","他得第三名。"]
-  ],
-  "🔧 Be 動詞與助動詞": [
-    ["am",["v."],"是 (第一人稱)","I am happy.","我很快樂。"],
-    ["is",["v."],"是 (第三人稱單數)","She is kind.","她很親切。"],
-    ["are",["v."],"是 (複數)","They are friends.","他們是朋友。"],
-    ["be",["v."],"是","I want to be a doctor.","我想當醫生。"],
-    ["can",["aux."],"能、會","I can swim.","我會游泳。"],
-    ["could",["aux."],"can 的過去式","Could you help me?","可以幫我嗎?" ],
-    ["do",["v.","aux."],"做；助動詞","Do you like tea?","你喜歡茶嗎?"],
-    ["may",["aux."],"可能、可以","May I come in?","我可以進來嗎?"],
-    ["might",["aux."],"可能","It might rain.","可能會下雨。"],
-    ["must",["aux."],"必須","You must go now.","你必須現在走。"],
-    ["should",["aux."],"應該","You should rest.","你應該休息。"],
-    ["will",["aux."],"將要、會","I will call you.","我會打給你。"],
-    ["would",["aux."],"會 (婉轉)","Would you like tea?","你想喝茶嗎?" ],
-    ["shall",["aux."],"將","Shall we go?","我們走吧?"]
-  ],
-  "🔤 代名詞": [
-    ["I",["pron."],"我","I love you.","我愛你。"],
-    ["you",["pron."],"你","You are kind.","你很親切。"],
-    ["he",["pron."],"他","He is tall.","他很高。"],
-    ["she",["pron."],"她","She sings well.","她唱歌很棒。"],
-    ["it",["pron."],"它","It is cold.","天氣很冷。"],
-    ["we",["pron."],"我們","We are friends.","我們是朋友。"],
-    ["they",["pron."],"他們","They are happy.","他們很快樂。"],
-    ["me",["pron."],"我 (受格)","Help me, please.","請幫我。"],
-    ["him",["pron."],"他 (受格)","I see him.","我看見他。"],
-    ["her",["det.","pron."],"她、她的","This is her book.","這是她的書。"],
-    ["us",["pron."],"我們 (受格)","Tell us a story.","跟我們說個故事。"],
-    ["them",["pron."],"他們 (受格)","I love them.","我愛他們。"],
-    ["my",["det."],"我的","My name is Tim.","我叫提姆。"],
-    ["your",["det."],"你的","What's your name?","你叫什麼名字?"],
-    ["his",["det."],"他的","His car is red.","他的車是紅的。"],
-    ["our",["det."],"我們的","Our school is big.","我們學校很大。"],
-    ["their",["det."],"他們的","Their house is new.","他們的房子是新的。"],
-    ["this",["pron."],"這個","This is fun.","這很好玩。"],
-    ["that",["pron."],"那個","That is mine.","那是我的。"],
-    ["these",["pron."],"這些","These are flowers.","這些是花。"],
-    ["those",["pron."],"那些","Those are mine.","那些是我的。"],
-    ["myself",["pron."],"我自己","I made it myself.","我自己做的。"],
-    ["yourself",["pron."],"你自己","Take care of yourself.","照顧好你自己。"],
-    ["everyone",["pron."],"每人","Everyone is here.","每個人都到了。"],
-    ["someone",["pron."],"某人","Someone called you.","有人打電話找你。"],
-    ["anyone",["pron."],"任何人","Did anyone come?","有人來嗎?"],
-    ["nobody",["pron."],"沒有人","Nobody knows.","沒人知道。"],
-    ["everything",["pron."],"每件事","Everything is fine.","一切都好。"],
-    ["something",["pron."],"某物","I want something to eat.","我想吃點東西。"],
-    ["anything",["pron."],"任何東西","Do you need anything?","你需要什麼嗎?"],
-    ["nothing",["pron."],"沒什麼","Nothing happened.","什麼事都沒發生。"]
-  ]
-});
-// 註: 此 starter 約 350 字,其餘來自 data/*.js 檔案。
+// 全部資料載入自 data/vocab.js (44 分類，~2,216 字，含星等)
 
 const VOCAB = window.VOCAB;
 
-// ============ v1.1: 心智圖對照 ============
-// 分類名稱 → 心智圖檔名 (不含副檔名，程式會自動追加 .png)
-const MINDMAP_BASE = "https://reminghsu.github.io/GEPTElementaryIntegrated/assets/mindmaps/";
-const MINDMAP_MAP = {
-  "👨‍👩‍👧 家庭與人際": ["mindmap_people_family_social_1of2","mindmap_people_family_social_2of2"],
-  "💼 身分與職業": ["mindmap_people_identity_jobs_1of2","mindmap_people_identity_jobs_2of2"],
-  "💉 健康與醫療": ["mindmap_body_health_medical"],
-  "🧍 身體與外貌": ["mindmap_body_health_body_parts","mindmap_appearance_colors_appearance"],
-  "🍚 食物與料理": ["mindmap_food_staples_dishes","mindmap_food_vegetables_fruits"],
-  "🥤 飲料": ["mindmap_food_drinks"],
-  "🍽️ 餐具與烹調": ["mindmap_food_cooking_seasoning"],
-  "🐶 動物": ["mindmap_nature_animals_1of2","mindmap_nature_animals_2of2"],
-  "🌳 自然與植物": ["mindmap_nature_plants_landscapes"],
-  "🌤️ 天氣與季節": ["mindmap_nature_weather_climate"],
-  "🏠 居家、家具與家用品": ["mindmap_places_home_items_rooms_1of2","mindmap_places_home_items_rooms_2of2"],
-  "🏫 學校與文具": ["mindmap_school_learning_stationery_1of2","mindmap_school_learning_stationery_2of2","mindmap_school_school_places"],
-  "🏙️ 城市與場所": ["mindmap_places_city_buildings_1of2","mindmap_places_city_buildings_2of2"],
-  "🚌 交通工具": ["mindmap_transport_vehicles","mindmap_transport_actions_facilities"],
-  "👕 衣物與配件": ["mindmap_appearance_clothes_accessories"],
-  "🎨 顏色與形狀": ["mindmap_appearance_colors_appearance"],
-  "📐 大小、形容程度": ["mindmap_tools_common_adjectives"],
-  "🕐 時間": ["mindmap_time_time_units","mindmap_time_frequency_adverbs"],
-  "📅 月份、星期、節日": ["mindmap_time_weekdays_months","mindmap_time_festivals"],
-  "🔢 數字": ["mindmap_tools_numbers","mindmap_tools_measurement_units"],
-  "🏃 日常動作 (動詞)": ["mindmap_actions_daily_life_1of3","mindmap_actions_daily_life_2of3","mindmap_actions_daily_life_3of3","mindmap_actions_body_movements_1of2","mindmap_actions_body_movements_2of2","mindmap_tools_other_common_verbs"],
-  "💭 心智與思考": ["mindmap_actions_mind_activities_1of4","mindmap_actions_mind_activities_2of4","mindmap_actions_mind_activities_3of4","mindmap_actions_mind_activities_4of4"],
-  "💬 溝通與媒體": ["mindmap_actions_communication_verbs"],
-  "🌐 抽象與其他": ["mindmap_abstract_abstract_nouns_1of6","mindmap_abstract_abstract_nouns_2of6","mindmap_abstract_abstract_nouns_3of6","mindmap_abstract_abstract_nouns_4of6","mindmap_abstract_abstract_nouns_5of6","mindmap_abstract_abstract_nouns_6of6"],
-  "✨ 形容詞與副詞": ["mindmap_tools_common_adjectives"],
-  "💭 副詞與連接詞": ["mindmap_tools_adverbs_function_words","mindmap_tools_prepositions_connectives"],
-  "💖 心情與感受": ["mindmap_people_emotions_personality_1of3","mindmap_people_emotions_personality_2of3","mindmap_people_emotions_personality_3of3"],
-  "💼 職業": ["mindmap_people_identity_jobs_1of2","mindmap_people_identity_jobs_2of2"],
-  "🏛️ 社會與制度": ["mindmap_abstract_society_institutions_1of2","mindmap_abstract_society_institutions_2of2","mindmap_abstract_countries_nations"],
-  "💰 金錢與商業": ["mindmap_abstract_shopping_money"],
-  "🎒 學校生活": ["mindmap_school_school_places","mindmap_school_learning_stationery_1of2","mindmap_school_learning_stationery_2of2"],
-  "✈️ 旅遊與假期": ["mindmap_leisure_travel_vacation"],
-  "🎉 興趣休閒": ["mindmap_leisure_sports","mindmap_leisure_arts_entertainment","mindmap_leisure_technology_devices"]
+// ============ v2.0: 心智圖系統 ============
+// 心智圖樹狀資料載入自 data/mindmaps.js (window.MINDMAPS)
+const MINDMAPS_ALL = window.MINDMAPS || [];
+
+// 分類名稱 → 適用心智圖的 index 陣列
+// 心智圖 index: 0=主架構 1=身分職業 2=家庭人際 3=情緒個性 4=身體健康 5=食物飲食
+// 6=居家場所 7=交通 8=自然天氣 9=時間 10=學校學習 11=服飾外觀 12=動作詞 13=社會抽象 14=休閒科技 15=功能字
+// 注：「🌐 主架構心智圖」讓使用者去專屬 tab 看，這裡不再重複
+const MINDMAP_FOR_CATEGORY = {
+  "👨‍👩‍👧 家庭與人際": [2],
+  "💼 身分與職業": [1],
+  "😊 情緒與個性": [3],
+  "🧍 身體部位": [4],
+  "🏥 健康與醫療": [4],
+  "🏫 學校場域": [10],
+  "📚 學習行為與用品": [10],
+  "🍚 主食與菜餚": [5],
+  "🥕 蔬果食材": [5],
+  "🍳 調味與烹飪": [5],
+  "☕ 飲料": [5],
+  "🏠 家中物品與房間": [6],
+  "🏙️ 城市與建築": [6],
+  "🚗 交通工具": [7],
+  "🛣️ 交通動作與設施": [7],
+  "🐶 動物": [8],
+  "🌳 植物與自然景觀": [8],
+  "🌤️ 天氣與氣候": [8],
+  "⏰ 時間單位": [9],
+  "📅 星期與月份": [9],
+  "🎉 節日": [9],
+  "🔁 頻率與時間副詞": [9],
+  "👕 衣物配件": [11],
+  "🎨 顏色與外觀": [11],
+  "💬 溝通動詞": [12],
+  "🏃 身體動作": [12],
+  "🗓️ 日常生活動作": [12],
+  "🧠 心智活動": [12],
+  "💡 抽象名詞": [13],
+  "💰 購物與金錢": [13],
+  "⚽ 運動": [14],
+  "🎭 藝文與娛樂": [14],
+  "✈️ 旅行與假期": [14],
+  "💻 科技裝置": [14],
+  "🌍 國家與民族": [13],
+  "🏛️ 社會議題與制度": [13],
+  "🔢 數字": [15],
+  "📏 計量單位": [15],
+  "🔤 代名詞與限定詞": [15],
+  "🔗 介系詞與連接詞": [15],
+  "⚙️ 副詞與其他功能詞": [15],
+  "🔧 Be 動詞與助動詞": [15],
+  "✨ 常用形容詞": [15],
+  "🎯 其他常用動詞": [12],
 };
+
+function getMindmaps(name){
+  if(state.mmOverride && Array.isArray(state.mmOverride[name])){
+    // 防衛：舊版可能存字串 slug；只保留有效的整數 index
+    const valid = state.mmOverride[name].filter(i=> typeof i === "number" && MINDMAPS_ALL[i]);
+    if(valid.length) return valid;
+  }
+  return MINDMAP_FOR_CATEGORY[name] || [];
+}
 
 // ============ 應用程式 ============
 const STORE_KEY = "gept_v1";
@@ -497,10 +348,87 @@ state.known = state.known || {};
 state.unfam = state.unfam || {};
 state.pocket = state.pocket || {};                      // v1.1
 state.flashMode = state.flashMode || "未標會";          // v1.1: 全部/已會/未標會/不熟
+state.mmOverride = state.mmOverride || {};              // v1.1: 使用者自訂心智圖對照
 state.selecting = false;                                // v1.1: 選取模式 (不持久)
 state.tab = state.tab || Object.keys(VOCAB)[0];
 state.fs = state.fs || 16;
 state.theme = state.theme || "light";
+
+// ===== v1.2 migration: 「💼 身分與職業」 + 「💼 職業」 → 「💼 職業」 =====
+function migrateCategoryName(oldName, newName){
+  let migrated = false;
+  if(state.tab === oldName){ state.tab = newName; migrated = true; }
+  if(state.mmOverride && state.mmOverride[oldName] !== undefined){
+    if(state.mmOverride[newName] === undefined) state.mmOverride[newName] = state.mmOverride[oldName];
+    delete state.mmOverride[oldName]; migrated = true;
+  }
+  for(const prefix of ["mm_idx_","mm_collapsed_","mm_expanded_"]){
+    const oldKey = prefix + oldName;
+    const newKey = prefix + newName;
+    if(state[oldKey] !== undefined){
+      if(state[newKey] === undefined) state[newKey] = state[oldKey];
+      delete state[oldKey]; migrated = true;
+    }
+  }
+  return migrated;
+}
+// ===== v2.0 migration: 舊版分類名稱 → 新版 =====
+const V2_RENAME = {
+  "💼 職業": "💼 身分與職業",
+  "🩺 健康與醫療": "🏥 健康與醫療",
+  "💉 健康與醫療": "🏥 健康與醫療",
+  "🥤 飲料": "☕ 飲料",
+  "🌳 自然與植物": "🌳 植物與自然景觀",
+  "🌤️ 天氣與季節": "🌤️ 天氣與氣候",
+  "🏠 居家、家具與家用品": "🏠 家中物品與房間",
+  "🏙️ 城市與場所": "🏙️ 城市與建築",
+  "🚌 交通工具": "🚗 交通工具",
+  "👕 衣物與配件": "👕 衣物配件",
+  "🎨 顏色與形狀": "🎨 顏色與外觀",
+  "🕐 時間": "⏰ 時間單位",
+  "📅 月份、星期、節日": "📅 星期與月份",
+  "💭 心智與思考": "🧠 心智活動",
+  "💬 溝通與媒體": "💬 溝通動詞",
+  "🌐 抽象與其他": "💡 抽象名詞",
+  "✨ 形容詞與副詞": "✨ 常用形容詞",
+  "💭 副詞與連接詞": "⚙️ 副詞與其他功能詞",
+  "💖 心情與感受": "😊 情緒與個性",
+  "🏛️ 社會與制度": "🏛️ 社會議題與制度",
+  "💰 金錢與商業": "💰 購物與金錢",
+  "✈️ 旅遊與假期": "✈️ 旅行與假期",
+};
+function migrateAllStateNames(){
+  for(const [oldN, newN] of Object.entries(V2_RENAME)){
+    migrateCategoryName(oldN, newN);
+  }
+  const validMeta = ["📖 使用說明","🎴 閃卡測驗","□ 未標示清單","✓ 已會清單","★ 不熟清單","📌 口袋單字","⭐ 高頻核心字"];
+  if(state.tab && !VOCAB[state.tab] && !validMeta.includes(state.tab)){
+    state.tab = "📖 使用說明";
+  }
+  for(const k of Object.keys(state)){
+    if(k.startsWith("mm_idx_") || k.startsWith("mm_collapsed_") || k.startsWith("mm_expanded_")){
+      const catN = k.replace(/^mm_(idx|collapsed|expanded)_/, "");
+      if(!VOCAB[catN]) delete state[k];
+    }
+  }
+  if(state.mmOverride){
+    for(const k of Object.keys(state.mmOverride)){
+      // 1. key 不在 VOCAB 中 → 刪除
+      if(!VOCAB[k]){ delete state.mmOverride[k]; continue; }
+      // 2. value 不是陣列、或含非整數（v1.1 舊字串 slug）→ 刪除
+      const arr = state.mmOverride[k];
+      if(!Array.isArray(arr) || arr.some(i=> typeof i !== "number")){
+        delete state.mmOverride[k];
+        continue;
+      }
+      // 3. 過濾掉不在範圍內的 index
+      const clean = arr.filter(i=> MINDMAPS_ALL[i]);
+      if(!clean.length) delete state.mmOverride[k];
+      else state.mmOverride[k] = clean;
+    }
+  }
+}
+migrateAllStateNames();
 
 function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
 function escHTML(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
@@ -509,19 +437,35 @@ const totalCount = Object.values(VOCAB).reduce((n,arr)=>n+arr.length,0);
 document.getElementById("total-count").textContent = totalCount;
 
 function renderTabs(){
-  const tabs = document.getElementById("tabs");
-  const themes = ["📖 使用說明", "🎴 閃卡測驗", "✓ 已會清單", "★ 不熟清單", "📌 口袋單字", ...Object.keys(VOCAB)];
-  tabs.innerHTML = themes.map(t=>{
-    let ct = "";
-    if(VOCAB[t]) ct = `<span class="ct">${VOCAB[t].length}</span>`;
-    else if(t === "📌 口袋單字"){
-      const n = Object.keys(state.pocket).length;
-      if(n) ct = `<span class="ct">${n}</span>`;
+  const metaTabs = ["📖 使用說明", "🎴 閃卡測驗", "□ 未標示清單", "✓ 已會清單", "★ 不熟清單", "📌 口袋單字"];
+  const allVocab = Object.keys(VOCAB);
+  const mainTabs = ["🌐 主架構心智圖", ...allVocab.filter(t=>!t.startsWith("📦"))];
+  const suppTabs = ["⭐ 高頻核心字", ...allVocab.filter(t=>t.startsWith("📦"))];
+  const countOf = (t)=>{
+    if(VOCAB[t]) return VOCAB[t].length;
+    if(t === "📌 口袋單字") return Object.keys(state.pocket).length;
+    if(t === "□ 未標示清單"){
+      const all = Object.values(VOCAB).flat();
+      return all.filter(it=>!state.known[it[0]] && !state.unfam[it[0]]).length;
     }
+    if(t === "🌐 主架構心智圖") return -1; // 不顯示計數
+    if(t === "⭐ 高頻核心字"){
+      return Object.values(VOCAB).flat().filter(it=>(it[5]||0)>=5).length;
+    }
+    if(t === "✓ 已會清單") return Object.keys(state.known).length;
+    if(t === "★ 不熟清單") return Object.keys(state.unfam).length;
+    return 0;
+  };
+  const tabHTML = (t)=>{
+    const n = countOf(t);
+    const ct = (n >= 0 && (VOCAB[t] || n)) ? `<span class="ct">${n}</span>` : "";
     const active = t === state.tab ? "active" : "";
     return `<button class="tab ${active}" data-tab="${escHTML(t)}">${escHTML(t)}${ct}</button>`;
-  }).join("");
-  tabs.querySelectorAll(".tab").forEach(b=>b.onclick = ()=>{ state.tab = b.dataset.tab; state.selecting=false; save(); render(); });
+  };
+  document.getElementById("tabs-meta").innerHTML = metaTabs.map(tabHTML).join("");
+  document.getElementById("tabs-main").innerHTML = mainTabs.map(tabHTML).join("");
+  document.getElementById("tabs-supp").innerHTML = suppTabs.map(tabHTML).join("");
+  document.querySelectorAll(".tabs-wrap .tab").forEach(b=>b.onclick = ()=>{ state.tab = b.dataset.tab; state.selecting=false; save(); render(); });
 }
 
 // ==== 發音引擎 ====
@@ -584,13 +528,21 @@ function speak(word, opts){
   setTimeout(()=> speechSynthesis.speak(u), 50);
 }
 
+function starHTML(n){
+  if(n >= 5) return '<span class="star-tag s5" title="必背核心字">★★★★★</span>';
+  if(n >= 4) return '<span class="star-tag s4" title="考試高頻字">★★★★</span>';
+  return '';
+}
+
 function cardHTML(item){
-  const [w, pos, zh, ex, tc] = item;
+  const [w, pos, zh, ex, tc, stars] = item;
   const cls = state.known[w] ? "known" : state.unfam[w] ? "unfam" : "";
   const knownOn = state.known[w] ? "on-known" : "";
   const unfamOn = state.unfam[w] ? "on-unfam" : "";
   const pocketOn = state.pocket[w] ? "on" : "";
-  return `<div class="card ${cls}" data-w="${escHTML(w)}">
+  const inPocket = state.pocket[w] ? "in-pocket" : "";
+  const starCls = stars===5?"has-s5":stars===4?"has-s4":"";
+  return `<div class="card ${cls} ${inPocket} ${starCls}" data-w="${escHTML(w)}">
     <button class="pocket-mark ${pocketOn}" data-act="pocket-toggle" title="加入/移出口袋">${state.pocket[w]?"✔":""}</button>
     <div class="actions">
       <button class="icon-btn ${knownOn}" data-act="known" title="已會">✓</button>
@@ -598,12 +550,12 @@ function cardHTML(item){
       <button class="icon-btn" data-act="speak" title="發音">🔊</button>
     </div>
     <div class="w-row">
-      <span class="word">${escHTML(w)}</span>
+      <span class="word">${escHTML(w)}</span>${starHTML(stars||0)}
       ${pos.map(p=>`<span class="pos">${escHTML(p)}</span>`).join("")}
     </div>
     <div class="zh">${escHTML(zh)}</div>
     <div class="ex"><span class="en">${escHTML(ex)}</span><span class="tc">${escHTML(tc)}</span></div>
-    <button class="pocket-pin ${pocketOn}" data-act="pocket-pin" title="加入口袋單字">📌</button>
+    <button class="pocket-pin ${pocketOn}" data-act="pocket-pin" title="${state.pocket[w]?'點擊移出口袋':'加入口袋單字'}"></button>
   </div>`;
 }
 
@@ -627,14 +579,29 @@ function bindCardCommonActions(reRender){
 }
 
 // ===== v1.1: 心智圖 =====
+// ===== v2.0 心智圖渲染（樹狀） =====
+function renderTreeHTML(node, depth=0){
+  if(!node) return '';
+  const safe = (s)=>String(s||"").replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
+  const kids = node.children && node.children.length 
+    ? '<ul class="mm-tree">' + node.children.map(c=>renderTreeHTML(c, depth+1)).join('') + '</ul>' 
+    : '';
+  const cls = depth === 0 ? "mm-root" : depth === 1 ? "mm-l1" : depth === 2 ? "mm-l2" : "mm-l3";
+  return depth === 0 
+    ? '<div class="'+cls+'">'+safe(node.text)+'</div>'+kids
+    : '<li class="'+cls+'"><span class="mm-node">'+safe(node.text)+'</span>'+kids+'</li>';
+}
+
 function renderMindmapHTML(name){
-  const slugs = MINDMAP_MAP[name];
+  const slugs = getMindmaps(name);
   if(!slugs || !slugs.length) return "";
-  const collapsed = state["mm_collapsed_"+name] ? "collapsed" : "";
+  const collapsed = state["mm_expanded_"+name] ? "" : "collapsed";
   const idx = state["mm_idx_"+name] || 0;
   const cur = Math.min(idx, slugs.length-1);
   const total = slugs.length;
-  const url = MINDMAP_BASE + slugs[cur] + ".png";
+  const mmIdx = slugs[cur];
+  const mm = MINDMAPS_ALL[mmIdx];
+  if(!mm) return "";
   const dots = total > 1 ? slugs.map((_,i)=>
     `<button class="mm-dot ${i===cur?"on":""}" data-mm-idx="${i}" aria-label="第 ${i+1} 張"></button>`
   ).join("") : "";
@@ -644,7 +611,7 @@ function renderMindmapHTML(name){
     <button class="mm-iconbtn" data-mm-next title="下一張">›</button>` : "";
   return `<div class="mindmap ${collapsed}" data-mm-name="${escHTML(name)}">
     <div class="mm-head">
-      <span class="mm-title">🧠 ${escHTML(name)} 心智圖</span>
+      <span class="mm-title">🧠 ${escHTML(mm.title)}</span>
       ${total>1 ? `<span class="mm-dots">${dots}</span>` : ""}
       <span class="mm-spacer"></span>
       ${arrows}
@@ -652,10 +619,7 @@ function renderMindmapHTML(name){
       <button class="mm-iconbtn" data-mm-collapse title="${collapsed?"展開":"收合"}">${collapsed?"▸":"▾"}</button>
     </div>
     <div class="mm-body">
-      <div class="mm-img-wrap">
-        <img src="${url}" alt="${escHTML(name)} 心智圖 ${cur+1}/${total}"
-             onerror="this.outerHTML='<div class=&quot;mm-fail&quot;>心智圖載入失敗<br><small>${escHTML(slugs[cur])}.png</small></div>'">
-      </div>
+      <div class="mm-tree-wrap">${renderTreeHTML(mm.root)}</div>
     </div>
   </div>`;
 }
@@ -663,36 +627,36 @@ function renderMindmapHTML(name){
 function bindMindmapActions(name, container){
   const mm = container.querySelector(`.mindmap[data-mm-name="${CSS.escape(name)}"]`);
   if(!mm) return;
-  const slugs = MINDMAP_MAP[name] || [];
+  const slugs = getMindmaps(name);
   const total = slugs.length;
   const go = (i)=>{ state["mm_idx_"+name] = ((i % total) + total) % total; save(); render(); };
   mm.querySelectorAll("[data-mm-idx]").forEach(b=> b.onclick = ()=> go(+b.dataset.mmIdx));
   const prev = mm.querySelector("[data-mm-prev]"); if(prev) prev.onclick = ()=> go((state["mm_idx_"+name]||0)-1);
   const next = mm.querySelector("[data-mm-next]"); if(next) next.onclick = ()=> go((state["mm_idx_"+name]||0)+1);
   const col = mm.querySelector("[data-mm-collapse]"); if(col) col.onclick = ()=>{
-    state["mm_collapsed_"+name] = !state["mm_collapsed_"+name]; save(); render();
+    state["mm_expanded_"+name] = !state["mm_expanded_"+name]; save(); render();
   };
   const zoom = mm.querySelector("[data-mm-zoom]"); if(zoom) zoom.onclick = ()=> openMindmapModal(name);
-  const img = mm.querySelector("img"); if(img) img.onclick = ()=> openMindmapModal(name);
 }
 
 function openMindmapModal(name){
-  const slugs = MINDMAP_MAP[name] || [];
+  const slugs = getMindmaps(name);
   if(!slugs.length) return;
   let i = state["mm_idx_"+name] || 0;
   const overlay = document.createElement("div");
   overlay.className = "mm-modal";
   function paint(){
     const cur = Math.min(i, slugs.length-1);
+    const mm = MINDMAPS_ALL[slugs[cur]];
     overlay.innerHTML = `
       <div class="mm-mbar">
-        <strong>${escHTML(name)} 心智圖</strong>
+        <strong>${escHTML(mm.title)}</strong>
         <span style="opacity:.7;font-family:ui-monospace,Menlo,monospace">${cur+1} / ${slugs.length}</span>
         ${slugs.length>1?`<button class="btn" data-go="-1">‹ 上一張</button>
           <button class="btn" data-go="1">下一張 ›</button>`:""}
         <button class="btn" data-close>✕ 關閉</button>
       </div>
-      <img src="${MINDMAP_BASE+slugs[cur]+".png"}" alt="${escHTML(name)} 心智圖">`;
+      <div class="mm-tree-modal">${renderTreeHTML(mm.root)}</div>`;
     overlay.querySelectorAll("[data-go]").forEach(b=> b.onclick = (e)=>{ e.stopPropagation(); i=((i+(+b.dataset.go))%slugs.length+slugs.length)%slugs.length; state["mm_idx_"+name]=i; save(); paint(); });
     overlay.querySelector("[data-close]").onclick = close;
   }
@@ -739,6 +703,196 @@ function renderTheme(name){
   bindCardCommonActions(()=> renderTheme(name));
 }
 
+// ===== v2.0 主架構心智圖專屬頁 =====
+const MAPPING_TABLE = window.MAPPING_TABLE || [];
+function renderMainMindmap(){
+  const main = document.getElementById("main");
+  const mm = MINDMAPS_ALL[0];
+  // 表格：分類 ↔ 心智圖對照
+  const tableHTML = MAPPING_TABLE.length ? `
+    <div class="mapping-card">
+      <h2>🗂️ 分類 ↔ 心智圖對照表</h2>
+      <p class="mapping-sub">44 個主題分類並非各自獨立成圖——同一大類的幾個分類會整合在同一張心智圖中、以不同分枝呈現。</p>
+      <div class="mapping-table-wrap">
+        <table class="mapping-table">
+          <thead><tr><th>#</th><th>主題分類</th><th>對應心智圖</th><th>圖內分枝</th></tr></thead>
+          <tbody>${MAPPING_TABLE.map(r=>`<tr><td>${r.n}</td><td>${escHTML(r.cat)}</td><td><span class="mm-pill">${escHTML(r.mm)}</span></td><td class="branch">${escHTML(r.branch)}</td></tr>`).join("")}</tbody>
+        </table>
+      </div>
+      <p class="mapping-foot">心智圖以「概念邂輯」分群，字表以「44 分類」細分，兩者用途不同——心智圖幫你建立架構記憶，字表供你逋類背語。</p>
+    </div>` : "";
+  const treeHTML = mm ? `
+    <div class="main-mm-card">
+      <h2>🌐 ${escHTML(mm.title)}</h2>
+      <p class="mapping-sub">13 大類、每一類底下的子類彼此平行互不重疊。</p>
+      <div class="mm-tree-wrap" style="background:var(--paper);border:1px solid var(--rule);padding:24px 28px">
+        ${renderTreeHTML(mm.root)}
+      </div>
+    </div>` : "";
+  if(!tableHTML && !treeHTML){
+    main.innerHTML = `<div class="empty">主架構心智圖尚未載入</div>`;
+    return;
+  }
+  main.innerHTML = tableHTML + treeHTML;
+}
+
+// ===== v2.0 高頻核心字（虛擬分類）=====
+function renderHighFreq(){
+  const main = document.getElementById("main");
+  const all = Object.entries(VOCAB).flatMap(([t,arr])=>arr.map(it=>[t,it]));
+  const seen = new Set();
+  const items = [];
+  for(const [t,it] of all){
+    if((it[5]||0) >= 5 && !seen.has(it[0])){
+      seen.add(it[0]);
+      items.push(it);
+    }
+  }
+  document.body.dataset.selecting = state.selecting ? "1" : "";
+  const groups = { "動詞":[], "名詞":[], "形容詞/副詞":[], "其他":[] };
+  for(const it of items){
+    const ps = it[1] || [];
+    if(ps.includes("v.")) groups["動詞"].push(it);
+    else if(ps.includes("n.")) groups["名詞"].push(it);
+    else if(ps.some(p=>p==="adj."||p==="adv.")) groups["形容詞/副詞"].push(it);
+    else groups["其他"].push(it);
+  }
+  const filtered = items;
+  let html = `
+    <div style="background:color-mix(in oklch,var(--accent) 8%,var(--paper));border:1px solid color-mix(in oklch,var(--accent) 30%,var(--rule));border-radius:14px;padding:18px 22px;margin-bottom:18px;font-family:ui-sans-serif,system-ui,sans-serif">
+      <h2 style="margin:0 0 4px;font-size:18px;color:var(--ink);font-weight:700">⭐ 高頻核心字（★★★★★ 必背）</h2>
+      <p style="margin:6px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.6">
+        從 <strong>${Object.keys(VOCAB).length} 個主題分類</strong>中抽出的 <strong>${items.length} 個 ★★★★★ 必背核心字</strong>。<br>
+        這些字是英檢初級得分的地基——先背這份背到滾瓜爛熟，再回去攻主題分類字表。
+      </p>
+    </div>
+    <div class="pocket-bar">
+      <button class="btn ${state.selecting?"active":""}" data-sel-toggle>${state.selecting?"✓ 選取中":"✏️ 選取模式"}</button>
+      ${state.selecting ? `
+        <button class="btn" data-sel-all>☑ 本頁全選加入口袋</button>
+        <button class="btn" data-sel-none>☐ 本頁全部移出口袋</button>` :
+        `<span class="pb-count">可批次將高頻字加入口袋、列印離線複習</span>`}
+      <span class="pb-spacer"></span>
+      <span class="pb-count">口袋總計：${Object.keys(state.pocket).length}</span>
+    </div>`;
+  for(const [g, arr] of Object.entries(groups)){
+    if(!arr.length) continue;
+    html += `<h3 style="margin:20px 0 10px;font-size:16px;color:var(--ink-2)">${g} <span style="color:var(--muted);font-weight:400">(${arr.length})</span></h3>`;
+    html += `<div class="grid">${arr.map(cardHTML).join("")}</div>`;
+  }
+  main.innerHTML = html;
+  const sb = main.querySelector("[data-sel-toggle]"); if(sb) sb.onclick = ()=>{ state.selecting = !state.selecting; render(); };
+  const sa = main.querySelector("[data-sel-all]"); if(sa) sa.onclick = ()=>{ filtered.forEach(it=> state.pocket[it[0]]=true); save(); updateProgress(); renderTabs(); render(); };
+  const sn = main.querySelector("[data-sel-none]"); if(sn) sn.onclick = ()=>{ filtered.forEach(it=> delete state.pocket[it[0]]); save(); updateProgress(); renderTabs(); render(); };
+  bindCardCommonActions(()=> renderHighFreq());
+}
+
+// ===== v1.1: 心智圖對照編輯器 =====
+function renderMmEditor(){
+  const root = document.getElementById("mm-editor-section");
+  if(!root) return;
+  const allCats = Object.keys(VOCAB);
+  const rows = allCats.map(cat=>{
+    const slugs = getMindmaps(cat);
+    const customized = state.mmOverride && state.mmOverride[cat] !== undefined;
+    const chips = slugs.length
+      ? slugs.map(s=>`<span class="mme-chip">${escHTML(((MINDMAPS_ALL[s]||MINDMAPS_ALL[+s])||{title:String(s)}).title)}</span>`).join("")
+      : `<span class="mme-empty">未指定</span>`;
+    return `<div class="mme-row ${customized?"mme-customized":""}" data-mme-cat="${escHTML(cat)}">
+      <span class="mme-name">${escHTML(cat)}</span>
+      <span class="mme-chips">${chips}</span>
+      <span class="mme-count">${slugs.length}張</span>
+      <button class="btn btn-small" data-mme-edit>✎ 編輯</button>
+      ${customized?`<button class="btn btn-small" data-mme-reset title="還原爲預設值">↻</button>`:""}
+    </div>`;
+  }).join("");
+  const total = allCats.length;
+  const customCount = Object.keys(state.mmOverride||{}).length;
+  root.innerHTML = `
+    <h2>🧠 心智圖對照設定 <span style="color:var(--muted);font-weight:400;font-size:12px;margin-left:6px">(進階)</span></h2>
+    <div class="mme-sub">預設對照是依檔名推測，可能與實際心智圖內容不一致。在這裡可以手動調整、覆寫預設，設定會隨「備份」一起保存。</div>
+    <div class="mme-toolbar">
+      <strong style="align-self:center;margin-right:4px">共 ${total} 個分類</strong>
+      <span style="color:var(--muted);font-size:12px;align-self:center">已自訂 ${customCount} 個</span>
+      <span style="flex:1"></span>
+      ${customCount?`<button class="btn btn-small" id="mme-reset-all" style="color:var(--red);border-color:var(--red)">↻ 全部還原預設</button>`:""}
+    </div>
+    <div class="mme-list">${rows}</div>`;
+  root.querySelectorAll("[data-mme-cat]").forEach(row=>{
+    const cat = row.dataset.mmeCat;
+    const editBtn = row.querySelector("[data-mme-edit]");
+    if(editBtn) editBtn.onclick = ()=> openMmEditorModal(cat);
+    const resetBtn = row.querySelector("[data-mme-reset]");
+    if(resetBtn) resetBtn.onclick = ()=>{
+      delete state.mmOverride[cat]; save(); renderMmEditor();
+    };
+  });
+  const resetAll = root.querySelector("#mme-reset-all");
+  if(resetAll) resetAll.onclick = ()=>{
+    if(confirm(`確定要清除所有 ${customCount} 個自訂對照、還原為預設值嗎？`)){
+      state.mmOverride = {}; save(); renderMmEditor();
+    }
+  };
+}
+
+function openMmEditorModal(cat){
+  const current = new Set(getMindmaps(cat));
+  const overlay = document.createElement("div");
+  overlay.className = "mme-modal";
+  function paint(){
+    overlay.innerHTML = `
+      <div class="mme-box" onclick="event.stopPropagation()">
+        <h3>✎ ${escHTML(cat)}</h3>
+        <div class="mme-hint">勾選要顯示在這個分類頂部的心智圖。點縮圖可看大圖預覽。目前選中 <strong>${current.size}</strong> / ${MINDMAPS_ALL.length}。</div>
+        <div class="mme-grid">
+          ${MINDMAPS_ALL.map((mmObj,_slugIdx)=>{const slug=String(_slugIdx);
+            const on = current.has(slug);
+            return `<label class="mme-opt ${on?'on':''}">
+              <input type="checkbox" data-slug="${escHTML(slug)}" ${on?'checked':''}>
+              <img class="mme-thumb" loading="lazy" src="javascript:void(0)" style="display:none" alt="" onclick="event.preventDefault();event.stopPropagation();window.__mmPreview('${escHTML(slug)}')">
+              <span class="mme-slug">${escHTML(slug.replace(/^mindmap_/,'').replace(/_/g,' '))}</span>
+            </label>`;
+          }).join("")}
+        </div>
+        <div class="mme-foot">
+          <button class="btn btn-small" data-clear>⛔ 全部不選</button>
+          <span class="sp"></span>
+          <button class="btn btn-small" data-cancel>取消</button>
+          <button class="btn btn-small" data-default style="border-color:var(--muted);color:var(--muted)">↻ 還原預設</button>
+          <button class="btn btn-small active" data-save>✓ 儲存</button>
+        </div>
+      </div>`;
+    overlay.querySelectorAll("input[data-slug]").forEach(cb=>{
+      cb.onchange = ()=>{
+        if(cb.checked) current.add(cb.dataset.slug);
+        else current.delete(cb.dataset.slug);
+        cb.closest(".mme-opt").classList.toggle("on", cb.checked);
+        overlay.querySelector(".mme-hint strong").textContent = current.size;
+      };
+    });
+    overlay.querySelector("[data-clear]").onclick = ()=>{ current.clear(); paint(); };
+    overlay.querySelector("[data-cancel]").onclick = close;
+    overlay.querySelector("[data-default]").onclick = ()=>{ 
+      delete state.mmOverride[cat]; save(); renderMmEditor(); close(); 
+    };
+    overlay.querySelector("[data-save]").onclick = ()=>{
+      // 保持 MINDMAP_SLUGS 原本順序
+      const ordered = MINDMAPS_ALL.map((_,i)=>String(i)).filter(s=>current.has(s)).map(s=>+s);
+      state.mmOverride[cat] = ordered;
+      save(); renderMmEditor(); close();
+    };
+  }
+  function close(){ overlay.remove(); document.removeEventListener("keydown", onKey); }
+  function onKey(e){ if(e.key === "Escape") close(); }
+  overlay.addEventListener("click", e=>{ if(e.target===overlay) close(); });
+  document.addEventListener("keydown", onKey);
+  document.body.appendChild(overlay);
+  paint();
+}
+
+// 心智圖单張預覽（v2.0 stub）
+window.__mmPreview = function(){};
+
 function renderHelp(){
   const main = document.getElementById("main");
   main.innerHTML = `
@@ -747,9 +901,12 @@ function renderHelp(){
       • 點 <strong>✓</strong> 標記已會 / <strong>★</strong> 標記不熟 (本機儲存,不會遺失)<br>
       • 點 <strong>🔊</strong> 用裝置內建語音朗讀單字<br>
       • 頂部搜尋框可同時搜尋 <em>單字、中文、詞類</em><br>
+      • 「<strong>□ 未標示清單</strong>」集中顯示還沒標「已會 / 不熟」的單字，可一次看出進度<br>
       • 「🎴 閃卡測驗」可選「全部 / 已會 / 未標會 / 不熟」四種模式，預設「未標會」<br>
       • <strong>📌 口袋單字</strong>：在分類頁點卡片右下角的 📌 加入，或開「選取模式」批次選；口袋可以一鍵列印 (A4) 離線複習<br>
-      • <strong>🧠 心智圖</strong>：多數分類頁頂部會顯示對應心智圖，有多張可切換，點圖可放大檢視<br>
+      • <strong>⭐ 高頻核心字</strong>：在補充字列第一個分頁，從所有主題分類中抽出 <strong>★★★★★ 必背字</strong>（約 200+ 個），面試不多時「只背它」也能抓 70~80% 底。<br>
+      • 單字卡右上角的 <strong>★★★★★</strong>是「必背」、<strong>★★★★</strong>是「高頻」。泒不出時以這兩類為優先。<br>
+      • 📕 <strong>心智圖</strong>：v2.0 改為文字樹狀圖（從官方整合表重新產生，不再往外拍圖），離線也能看<br>
       • <strong>💾 備份</strong>：右上角「💾 備份」可將學習進度匯出 JSON / 從另一裝置匯入（與 v1.0 相容）
     </div>
     <div class="legend">
@@ -767,6 +924,27 @@ function renderHelp(){
     <div class="changelog">
       <h2>📜 版本歷史 Changelog</h2>
       <div class="ver">
+        <span class="ver-tag minor">v2.0</span>
+        <div class="ver-body">
+          <strong>官方 v2 重構·加入星等</strong><span class="ver-date">2025-11</span>
+          <ul>
+            <li>📐 依 LTTC 2026/04 官方字表 v2 重新拆分為 <strong>44 個主題分類</strong>（原 39 順序與頭者有調整）。</li>
+            <li>⭐ 單字加上 <strong>★★★★★ / ★★★★</strong> 重要性星等標記；新增「<strong>⭐ 高頻核心字</strong>」虛擬分類（抽出所有 ★★★★★），與一般分類一樣可加口袋、批次選取。</li>
+            <li>🧠 心智圖改為<strong>文字樹狀圖</strong>，離線可看，資料來自 v2 md 的 Mermaid 原始結構。</li>
+            <li>🔌 備份與 localStorage 向下相容：已會 / 不熟 / 口袋皆以單字為 key，不會消失；分類名稱變動部分有 22 條自動遷移規則，被拆分的舊分類會回到使用說明頁。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ver">
+        <span class="ver-tag minor">v1.2</span>
+        <div class="ver-body">
+          <strong>字表重構</strong><span class="ver-date">2025-11</span>
+          <ul>
+            <li>💼 「身分與職業」與「職業」合併為「<strong>💼 職業</strong>」一個分類（原本重複 74%）。舊備份檔與本機設定會自動遷移，已會 / 不熟 / 口袋不受影響。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ver">
         <span class="ver-tag minor">v1.1</span>
         <div class="ver-body">
           <strong>心智圖 · 口袋單字 · 閃卡模式</strong><span class="ver-date">2025-11</span>
@@ -774,8 +952,11 @@ function renderHelp(){
             <li>🎴 <strong>閃卡測驗</strong>新增「全部 / 已會 / 未標會 / 不熟」四種模式，預設「未標會」；閃卡中可直接標記「不熟」及加入口袋。</li>
             <li>📌 新增 <strong>口袋單字</strong>功能：在任何分類頁選單字加入口袋；口袋頁提供 A4 排版與一鍵列印 / 存 PDF，離線複習專用。</li>
             <li>🧠 新增 <strong>心智圖</strong>內嵌顯示：多數分類頂部顯示對應心智圖，有多張時提供頁碼 + 切換鈕 + 進度點，可點收合或放大全螢幕。</li>
-            <li>🔌 完全向後相容：舊資料不受影響，且新增「💾 備份」可匯入 v1.0 的 JSON。</li>
-            <li>💾 新增 <strong>備份 / 還原</strong>：右上角 💾 可匯出 JSON 備份、跨裝置同步、支援「合併」與「取代」兩種匯入模式。</li>
+            <li>💾 新增 <strong>備份 / 還原</strong>：右上角 💾 可匯出 JSON 備份、跨裝置同步、支援「合併」與「取代」兩種匯入模式（與 v1.0 相容）。</li>
+            <li>🧩 新增 <strong>心智圖對照設定</strong>：可手動調整每個分類顯示的心智圖，自訂值會跟著備份檔走。</li>
+            <li>📝 新增 <strong>□ 未標示清單</strong>：集中顯示還沒標「已會 / 不熟」的單字，同樣可標記 / 加入口袋 / 批次選取。</li>
+            <li>🧠 心智圖<strong>預設收合</strong>，需要手動展開才會顯示（避免主動干擾背單字的專注力）。</li>
+            <li>🔌 完全向後相容：舊資料不受影響。</li>
           </ul>
         </div>
       </div>
@@ -919,30 +1100,94 @@ function renderPocket(){
   };
 }
 
+function renderSearchResults(q){
+  const main = document.getElementById("main");
+  const groups = {};
+  let total = 0;
+  for(const [theme, arr] of Object.entries(VOCAB)){
+    const hits = arr.filter(([w,p,zh])=>
+      w.toLowerCase().includes(q) || zh.includes(q) || p.some(x=>x.toLowerCase().includes(q))
+    );
+    if(hits.length){ groups[theme] = hits; total += hits.length; }
+  }
+  document.body.dataset.selecting = state.selecting ? "1" : "";
+  if(!total){
+    main.innerHTML = `<div class="empty">找不到符合 「<strong>${escHTML(q)}</strong>」 的單字。<br><span style="font-size:13px;color:var(--muted)">可以試試單字、中文、或詞類縮寫如 n. / v. / adj.</span></div>`;
+    return;
+  }
+  const flatList = Object.values(groups).flat();
+  let html = `
+    <div style="margin-bottom:14px;color:var(--muted);font-size:14px">🔍 全分類搜尋「<strong style="color:var(--ink)">${escHTML(q)}</strong>」：共 <strong style="color:var(--ink)">${total}</strong> 個結果，跨 ${Object.keys(groups).length} 個分類</div>
+    <div class="pocket-bar">
+      <button class="btn ${state.selecting?"active":""}" data-sel-toggle>${state.selecting?"✓ 選取中":"✏️ 選取模式"}</button>
+      ${state.selecting ? `
+        <button class="btn" data-sel-all>☑ 選取全部結果加入口袋</button>
+        <button class="btn" data-sel-none>☐ 全部移出口袋</button>` :
+        `<span class="pb-count">可批次選取搜尋結果加入口袋</span>`}
+      <span class="pb-spacer"></span>
+      <span class="pb-count">口袋總計：${Object.keys(state.pocket).length}</span>
+    </div>`;
+  for(const t of Object.keys(groups)){
+    html += `<h3 style="margin:20px 0 10px;font-size:16px;color:var(--ink-2);display:flex;align-items:baseline;gap:8px">
+      <span>${escHTML(t)}</span>
+      <span style="color:var(--muted);font-weight:400;font-size:13px">${groups[t].length} 個結果</span>
+      <button class="btn" style="margin-left:auto;font-size:12px;padding:3px 10px" data-jump-tab="${escHTML(t)}">前往分類 →</button>
+    </h3>`;
+    html += `<div class="grid">${groups[t].map(cardHTML).join("")}</div>`;
+  }
+  main.innerHTML = html;
+  const sb = main.querySelector("[data-sel-toggle]"); if(sb) sb.onclick = ()=>{ state.selecting = !state.selecting; renderSearchResults(q); };
+  const sa = main.querySelector("[data-sel-all]"); if(sa) sa.onclick = ()=>{ flatList.forEach(it=> state.pocket[it[0]]=true); save(); updateProgress(); renderTabs(); renderSearchResults(q); };
+  const sn = main.querySelector("[data-sel-none]"); if(sn) sn.onclick = ()=>{ flatList.forEach(it=> delete state.pocket[it[0]]); save(); updateProgress(); renderTabs(); renderSearchResults(q); };
+  main.querySelectorAll("[data-jump-tab]").forEach(b=> b.onclick = ()=>{
+    document.getElementById("search").value = "";
+    state.tab = b.dataset.jumpTab; save(); renderTabs(); render();
+  });
+  bindCardCommonActions(()=> renderSearchResults(q));
+}
+
 function render(){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.dataset.tab===state.tab));
+  document.querySelectorAll(".tabs-wrap .tab").forEach(t=>t.classList.toggle("active", t.dataset.tab===state.tab));
+  // 全局搜尋：只要搜尋框有字，就離開當前分類顯示跨分類結果
+  const q = ((document.getElementById("search")||{}).value || "").trim().toLowerCase();
+  if(q) return renderSearchResults(q);
   if(state.tab === "📖 使用說明") return renderHelp();
   if(state.tab === "🎴 閃卡測驗") return renderFlash();
   if(state.tab === "✓ 已會清單") return renderFiltered("known");
   if(state.tab === "★ 不熟清單") return renderFiltered("unfam");
+  if(state.tab === "□ 未標示清單") return renderFiltered("unset");
   if(state.tab === "📌 口袋單字") return renderPocket();
+  if(state.tab === "⭐ 高頻核心字") return renderHighFreq();
+  if(state.tab === "🌐 主架構心智圖") return renderMainMindmap();
   renderTheme(state.tab);
 }
 
 function renderFiltered(kind){
   const main = document.getElementById("main");
   const all = Object.entries(VOCAB).flatMap(([t,arr])=>arr.map(it=>[t,it]));
-  const items = all.filter(([t,it])=> kind==="known" ? state.known[it[0]] : state.unfam[it[0]]);
-  const label = kind==="known" ? "已會" : "不熟";
+  const items = all.filter(([t,it])=> {
+    if(kind==="known") return state.known[it[0]];
+    if(kind==="unfam") return state.unfam[it[0]];
+    if(kind==="unset") return !state.known[it[0]] && !state.unfam[it[0]];
+    return false;
+  });
+  const label = kind==="known" ? "已會" : kind==="unfam" ? "不熟" : "未標示";
+  const icon = kind==="known" ? "✓" : kind==="unfam" ? "★" : "□";
   document.body.dataset.selecting = state.selecting ? "1" : "";
   if(!items.length){
-    main.innerHTML = `<div class="empty">尚未標記任何「${label}」單字。<br>到任一主題分頁,點單字卡右上角的 ${kind==="known"?"✓":"★"} 即可加入。</div>`;
+    const hint = kind==="unset" 
+      ? `🎉 你已經把所有單字都標記過了！<br>到「✓ 已會」或「★ 不熟」清單查看成果。`
+      : `尚未標記任何「${label}」單字。<br>到任一主題分頁，點單字卡右上角的 ${icon} 即可加入。`;
+    main.innerHTML = `<div class="empty">${hint}</div>`;
     return;
   }
   // group by theme
   const groups = {};
   items.forEach(([t,it])=>{ (groups[t] = groups[t]||[]).push(it); });
   const flatList = items.map(([t,it])=>it);
+  const subHint = kind==="unset"
+    ? `這些單字還沒被標為「已會」或「不熟」。閃卡測驗預設會从這裡抽。`
+    : `可以批次將「${label}」單字加入口袋列印`;
   let html = `
     <div style="margin-bottom:14px;color:var(--muted);font-size:14px">共 ${items.length} 個「${label}」單字</div>
     <div class="pocket-bar">
@@ -950,7 +1195,7 @@ function renderFiltered(kind){
       ${state.selecting ? `
         <button class="btn" data-sel-all>☑ 本頁全選加入口袋</button>
         <button class="btn" data-sel-none>☐ 本頁全部移出口袋</button>` :
-        `<span class="pb-count">可以批次將「${label}」單字加入口袋列印</span>`}
+        `<span class="pb-count">${subHint}</span>`}
       <span class="pb-spacer"></span>
       <span class="pb-count">口袋總計：${Object.keys(state.pocket).length}</span>
     </div>`;
@@ -975,9 +1220,7 @@ function updateProgress(){
 document.documentElement.dataset.theme = state.theme;
 document.body.style.setProperty("--fs", state.fs+"px");
 
-document.getElementById("search").oninput = ()=>{
-  if(VOCAB[state.tab]) renderTheme(state.tab);
-};
+document.getElementById("search").oninput = ()=>{ render(); };
 document.getElementById("font-bigger").onclick = ()=>{ state.fs=Math.min(22,state.fs+1); document.body.style.setProperty("--fs",state.fs+"px"); save(); };
 document.getElementById("font-smaller").onclick = ()=>{ state.fs=Math.max(13,state.fs-1); document.body.style.setProperty("--fs",state.fs+"px"); save(); };
 document.getElementById("theme-toggle").onclick = ()=>{
@@ -1011,14 +1254,14 @@ document.getElementById("voice-test").onclick = ()=> speak("Hello, this is your 
 
 // ==== v1.1: 備份 / 匯入 匯出 JSON (相容 v1.0) ====
 const BACKUP_VERSION = "1.1";
-const BACKUP_KEYS = ["known","unfam","pocket","flashMode","voice","rate","pitch","theme","fs"]; // v1.0 只有前面幾個，沒交集也 OK
+const BACKUP_KEYS = ["known","unfam","pocket","flashMode","mmOverride","voice","rate","pitch","theme","fs"]; // v1.0 只有前面幾個，沒交集也 OK
 
 function exportBackup(){
   const payload = { app:"GEPT-Elementary", version: BACKUP_VERSION, exportedAt: new Date().toISOString(), data: {} };
   for(const k of BACKUP_KEYS){ if(state[k] !== undefined) payload.data[k] = state[k]; }
-  // 心智圖使用者偏好 (mm_idx_*, mm_collapsed_*) 也一併備份
+  // 心智圖使用者偏好 (mm_idx_*, mm_collapsed_*, mm_expanded_*) 也一併備份
   for(const k of Object.keys(state)){
-    if(k.startsWith("mm_idx_") || k.startsWith("mm_collapsed_")) payload.data[k] = state[k];
+    if(k.startsWith("mm_idx_") || k.startsWith("mm_collapsed_") || k.startsWith("mm_expanded_")) payload.data[k] = state[k];
   }
   const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
   const url = URL.createObjectURL(blob);
@@ -1042,7 +1285,7 @@ function importBackup(file, mode){
     const accept = {};
     for(const k of BACKUP_KEYS){ if(data[k] !== undefined) accept[k] = data[k]; }
     for(const k of Object.keys(data)){
-      if(k.startsWith("mm_idx_") || k.startsWith("mm_collapsed_")) accept[k] = data[k];
+      if(k.startsWith("mm_idx_") || k.startsWith("mm_collapsed_") || k.startsWith("mm_expanded_")) accept[k] = data[k];
     }
     if(!Object.keys(accept).length){ alert("未在匯入檔中找到可識別的學習資料。"); return; }
     if(mode === "replace"){
@@ -1060,6 +1303,10 @@ function importBackup(file, mode){
     // 保護：舊版可能沒有「未標會」閃卡模式
     if(!state.flashMode || !["全部","已會","未標會","不熟"].includes(state.flashMode)) state.flashMode = "未標會";
     if(!state.pocket) state.pocket = {};
+    // v1.2: 匯入舊備份時也要跑一次分類名称遷移
+    migrateCategoryName("💼 身分與職業", "💼 職業");
+    // v2.0：跨版本變更名同步遷移
+    migrateAllStateNames();
     save(); updateProgress(); renderTabs(); render();
     const cnt = (state.known?Object.keys(state.known).length:0)
               + (state.unfam?Object.keys(state.unfam).length:0)
