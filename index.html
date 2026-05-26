@@ -102,7 +102,13 @@ mark{background:color-mix(in oklch,var(--yellow) 60%,transparent);padding:0 2px;
 .mapping-table tbody tr:hover{background:color-mix(in oklch,var(--accent) 5%,var(--paper))}
 .mapping-table tbody td:first-child{color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:11.5px;width:36px;text-align:center}
 .mapping-table .mm-pill{display:inline-block;padding:2px 8px;border-radius:99px;background:color-mix(in oklch,var(--accent) 14%,var(--paper));border:1px solid color-mix(in oklch,var(--accent) 35%,var(--rule));font-size:12.5px;color:var(--ink)}
-.mapping-table .branch{color:var(--muted);font-size:12.5px}
+/* v2.4 心智圖圖片區 */
+.mm-img-box{background:color-mix(in oklch,var(--paper) 70%,var(--bg));border-radius:8px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.mm-img-box img{max-width:100%;width:100%;height:auto;display:block;cursor:zoom-in;border-radius:4px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.mm-img-box .mm-img-hint{font-size:11.5px;color:var(--muted);font-family:ui-sans-serif,system-ui,sans-serif}
+.mm-img-box .mm-img-hint.hidden{display:none}
+.mm-img-zoom img{max-width:96vw;max-height:88vh;width:auto;background:#fff;border-radius:6px;cursor:zoom-out}
+.mm-tree-wrap.mm-fallback{background:color-mix(in oklch,var(--paper) 70%,var(--bg));border-radius:8px;padding:14px 18px}
 /* v2.0 樹狀心智圖 */
 .mindmap .mm-tree-wrap{padding:14px 18px;background:color-mix(in oklch,var(--paper) 70%,var(--bg));border-radius:10px;max-height:60vh;overflow:auto}
 .mindmap .mm-root,.mm-tree-modal .mm-root{font-size:15px;font-weight:700;padding:6px 12px;background:var(--accent);color:#fff;border-radius:8px;display:inline-block;margin-bottom:10px}
@@ -580,6 +586,44 @@ function bindCardCommonActions(reRender){
 
 // ===== v1.1: 心智圖 =====
 // ===== v2.0 心智圖渲染（樹狀） =====
+// ===== v2.4 圖片版心智圖：webp 檔名對應 index =====
+const MINDMAP_IMG_BASE = "https://reminghsu.github.io/GEPTElementaryIntegrated/assets/mindmaps/";
+// 16 張心智圖的圖片檔名（不含副檔名）— 對應 MINDMAPS_ALL 順序
+const MINDMAP_IMG_NAMES = [
+  "mindmap_0",     // 0: 主架構
+  "mindmap_1.1",   // 1: 人物 — 身分與職業
+  "mindmap_1.2",   // 2: 人物 — 家庭與人際
+  "mindmap_1.3",   // 3: 人物 — 情緒與個性
+  "mindmap_2",     // 4: 身體與健康
+  "mindmap_3",     // 5: 食物與飲食
+  "mindmap_4",     // 6: 居家與場所
+  "mindmap_5",     // 7: 交通
+  "mindmap_6",     // 8: 自然
+  "mindmap_7",     // 9: 時間
+  "mindmap_8",     // 10: 學校與學習
+  "mindmap_9",     // 11: 服飾與外觀
+  "mindmap_10",    // 12: 動作
+  "mindmap_11",    // 13: 社會與抽象
+  "mindmap_12",    // 14: 休閒與科技
+  "mindmap_13",    // 15: 功能字
+];
+function mmImgUrl(idx){
+  const name = MINDMAP_IMG_NAMES[idx];
+  return name ? MINDMAP_IMG_BASE + name + ".webp" : "";
+}
+function renderMindmapImageOrTree(idx, mm){
+  const url = mmImgUrl(idx);
+  const safeTitle = String(mm.title||"").replace(/["<>]/g,"");
+  if(!url) return `<div class="mm-tree-wrap">${renderTreeHTML(mm.root)}</div>`;
+  // <img> 載入失敗時自動 fallback 到樹狀渲染（onerror 內以 innerHTML 替換）
+  return `<div class="mm-img-box">
+      <img src="${url}" alt="${safeTitle}" loading="lazy"
+           onclick="window.__mmZoom && window.__mmZoom(${idx})"
+           onerror="this.parentElement.outerHTML='<div class=&quot;mm-tree-wrap mm-fallback&quot;>${renderTreeHTML(mm.root).replace(/'/g,"&#39;").replace(/"/g,"&quot;")}</div>'" />
+      <div class="mm-img-hint">點圖片放大 · 載不出來會自動顯示文字版</div>
+    </div>`;
+}
+
 function renderTreeHTML(node, depth=0){
   if(!node) return '';
   const safe = (s)=>String(s||"").replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
@@ -619,7 +663,7 @@ function renderMindmapHTML(name){
       <button class="mm-iconbtn" data-mm-collapse title="${collapsed?"展開":"收合"}">${collapsed?"▸":"▾"}</button>
     </div>
     <div class="mm-body">
-      <div class="mm-tree-wrap">${renderTreeHTML(mm.root)}</div>
+      ${renderMindmapImageOrTree(mmIdx, mm)}
     </div>
   </div>`;
 }
@@ -639,6 +683,26 @@ function bindMindmapActions(name, container){
   const zoom = mm.querySelector("[data-mm-zoom]"); if(zoom) zoom.onclick = ()=> openMindmapModal(name);
 }
 
+// ===== v2.4 心智圖圖片中央放大 modal =====
+window.__mmZoom = function(idx){
+  const mm = MINDMAPS_ALL[idx];
+  if(!mm) return;
+  const url = mmImgUrl(idx);
+  const overlay = document.createElement("div");
+  overlay.className = "mm-modal mm-img-zoom";
+  overlay.innerHTML = `
+    <div class="mm-mbar">
+      <strong>${escHTML(mm.title)}</strong>
+      <button class="btn" data-c>✕ 關閉</button>
+    </div>
+    <img src="${url}" alt="${escHTML(mm.title)}"
+         onerror="this.outerHTML='<div class=&quot;mm-tree-modal&quot; style=&quot;background:#fff;padding:24px;border-radius:8px;max-height:84vh;overflow:auto&quot;>'+\`${renderTreeHTML(mm.root).replace(/`/g,'\\`')}\`+'</div>'">`;
+  overlay.querySelector("[data-c]").onclick = ()=> overlay.remove();
+  overlay.addEventListener("click", e=>{ if(e.target===overlay) overlay.remove(); });
+  document.addEventListener("keydown", function esc(e){ if(e.key==="Escape"){ overlay.remove(); document.removeEventListener("keydown", esc); }});
+  document.body.appendChild(overlay);
+};
+
 function openMindmapModal(name){
   const slugs = getMindmaps(name);
   if(!slugs.length) return;
@@ -656,7 +720,8 @@ function openMindmapModal(name){
           <button class="btn" data-go="1">下一張 ›</button>`:""}
         <button class="btn" data-close>✕ 關閉</button>
       </div>
-      <div class="mm-tree-modal">${renderTreeHTML(mm.root)}</div>`;
+      ${renderMindmapImageOrTree(slugs[cur], mm).replace("mm-img-hint","mm-img-hint hidden")}
+    `;
     overlay.querySelectorAll("[data-go]").forEach(b=> b.onclick = (e)=>{ e.stopPropagation(); i=((i+(+b.dataset.go))%slugs.length+slugs.length)%slugs.length; state["mm_idx_"+name]=i; save(); paint(); });
     overlay.querySelector("[data-close]").onclick = close;
   }
@@ -725,9 +790,7 @@ function renderMainMindmap(){
     <div class="main-mm-card">
       <h2>🌐 ${escHTML(mm.title)}</h2>
       <p class="mapping-sub">13 大類、每一類底下的子類彼此平行互不重疊。</p>
-      <div class="mm-tree-wrap" style="background:var(--paper);border:1px solid var(--rule);padding:24px 28px">
-        ${renderTreeHTML(mm.root)}
-      </div>
+      ${renderMindmapImageOrTree(0, mm)}
     </div>` : "";
   if(!tableHTML && !treeHTML){
     main.innerHTML = `<div class="empty">主架構心智圖尚未載入</div>`;
